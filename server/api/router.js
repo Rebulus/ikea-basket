@@ -9,11 +9,10 @@ router.get('/', (req, res) => {
 
 router.route('/:locale/:lang/products/:productNumber')
     .get((req, res) => {
-        const { locale, lang, productNumber } = req.params;
-        product.get({ locale, lang, productNumber })
+        product.get(req.params)
             .then(
                 (data) => res.json(data),
-                (data) => res.json(data)
+                (data) => res.status(404).json(data)
             );
     });
 

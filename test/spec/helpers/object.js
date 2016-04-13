@@ -68,6 +68,18 @@ describe('helpers/object', function() {
                     }
                 ],
                 path: 'prop1.prop2'
+            },
+            {
+                object: [
+                    {
+                        prop1: [
+                            {
+                                prop2: ['value1', 'value2']
+                            }
+                        ]
+                    }
+                ],
+                path: 'prop1.prop2'
             }
         ].forEach(function(assetItem) {
             it(`should select the first property from path ${JSON.stringify(assetItem)}, if some item is array`, function() {

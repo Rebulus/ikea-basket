@@ -1,8 +1,7 @@
 import config from '../cfgs/config';
 
-export const getApiUrl = ({locale, lang}) => {
-    const langPath = `/${locale}/${lang}`;
-    return config.urls.root + langPath + config.urls.product;
+export const getProductUrl = ({locale, lang, productNumber}) => {
+    return `${config.urls.root}/${locale}/${lang}/catalog/products/${productNumber}/`;
 };
 
 /**
@@ -12,7 +11,7 @@ export const getApiUrl = ({locale, lang}) => {
  * http://www.ikea.com/ru/ru/catalog/products/S49123839/
  * @type {RegExp}
  */
-const urlRegexp = /^(http(s)?:\/\/)?(www\.)?ikea\.com\/([^\/?&=]+)\/([^\/?&=]+)\/catalog\/products\/([^\/?&=]+)(\/)?$/;
+const urlRegexp = /ikea\.com\/([^/?&=+]+)\/([^/?&=+]+)\/catalog\/products\/([^/?&=+]+)(?:\/#\/)?([^/?&=+]+)?/;
 
 /**
  * Parse product's URL and format params for a product's request
@@ -29,9 +28,9 @@ export const getProductParams = (url) => {
     if (typeof url === 'string') {
         const parsedUrl = urlRegexp.exec(url);
         if (parsedUrl) {
-            result.productNumber = parsedUrl[6];
-            result.locale = parsedUrl[4];
-            result.lang = parsedUrl[5];
+            result.productNumber = parsedUrl[4] || parsedUrl[3];
+            result.locale = parsedUrl[2];
+            result.lang = parsedUrl[1];
         }
     }
 
@@ -39,6 +38,6 @@ export const getProductParams = (url) => {
 };
 
 export default {
-    getApiUrl,
+    getProductUrl,
     getProductParams
 }

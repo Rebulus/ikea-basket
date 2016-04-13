@@ -1,11 +1,20 @@
 import React from 'react';
+import _ from 'lodash';
 import currencyDicts from '../../../helpers/dicts/currency';
+import { getFirstProperty } from '../../../helpers/object';
 
-const formatProductNumber = (productNumber) => {
+export const formatProductNumber = (productNumber) => {
     return productNumber
         .replace(/^\D/, '')
         .match(/\d{1,3}/g)
         .join('.');
+};
+
+export const calculateWeight = (packages) => {
+    return _.reduce(packages, function(result, packagesItem) {
+        var weight = getFirstProperty(packagesItem, 'pkgInfo.weightMet').replace(',', '.').trim();
+        return result + parseFloat(weight);
+    }, 0);
 };
 
 export default (props) => {
@@ -36,7 +45,7 @@ export default (props) => {
                             <h5>Price: {props.price} {currencyDicts[props.locale]}</h5>
                             <dl className="dl-horizontal">
                                 <dt>Weight:</dt>
-                                <dd>{props.weight}</dd>
+                                <dd>{calculateWeight(props.packages)}</dd>
                             </dl>
                         </div>
                     )

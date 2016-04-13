@@ -12,7 +12,8 @@ describe('helpers/url', function() {
             'http://ikea.com/ru/ru/catalog/products/S49123839/',
             'https://www.ikea.com/ru/ru/catalog/products/S49123839',
             'www.ikea.com/ru/ru/catalog/products/S49123839/',
-            'ikea.com/ru/ru/catalog/products/S49123839'
+            'ikea.com/ru/ru/catalog/products/S49123839',
+            'http://ikea.com/ru/ru/catalog/products/80264964/#/S49123839'
         ].forEach(function(url) {
             it('should parse a ikea url formatted like ' + url, function() {
                 const expectedResult = {

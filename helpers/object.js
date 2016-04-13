@@ -14,7 +14,7 @@ export const getFirstProperty = (object, path) => {
         }
         object = object[property];
     });
-    return object;
+    return Array.isArray(object) ? object[0] : object;
 };
 
 export default {
