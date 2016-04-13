@@ -36,6 +36,15 @@ describe('actions', function() {
         
         expect(actions.removeProduct(this.productId)).to.be.deep.equal(expectedData);
     });
+    
+    it('should create an action to remove all products', function() {
+        const expectedData = {
+            type: actions.REMOVE_ALL,
+            payload: {}
+        };
+        
+        expect(actions.removeAll()).to.be.deep.equal(expectedData);
+    });
 
     it('should create an action to request a product', function() {
         const expectedData = {

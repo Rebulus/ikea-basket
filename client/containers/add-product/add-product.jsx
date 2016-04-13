@@ -27,5 +27,5 @@ const AddProduct = React.createClass({
 
 export default connect(
     null,
-    {fetchProductIfNeeded}
+    { fetchProductIfNeeded }
 )(AddProduct);

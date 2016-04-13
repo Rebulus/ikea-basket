@@ -69,5 +69,20 @@ describe('reducers', function() {
         
         expect(ikeaBasket(store, actions.removeProduct(this.productId))).to.be.deep.equal(expectedStore);
     });
+    
+    it('should remove all products from product\'s list', function() {
+        const store = {
+            products: {
+                [this.productId]: this.product,
+                'ru-ru-0812391': {}
+            }
+        };
+        deepFreeze(store);
+        const expectedStore = {
+            products: {}
+        };
+
+        expect(ikeaBasket(store, actions.removeAll())).to.be.deep.equal(expectedStore);
+    })
 
 });

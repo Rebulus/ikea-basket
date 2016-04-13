@@ -24,6 +24,14 @@ export const removeProduct = (productId) => {
     }
 };
 
+export const REMOVE_ALL = 'REMOVE_ALL';
+export const removeAll = () => {
+    return {
+        type: REMOVE_ALL,
+        payload: {}
+    }
+};
+
 export const REQUEST_PRODUCT = 'REQUEST_PRODUCT';
 /**
  * @param {Product~params} params

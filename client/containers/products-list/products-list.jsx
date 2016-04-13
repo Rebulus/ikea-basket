@@ -1,13 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { removeAll, removeProduct } from '../../actions'
 import Product from '../../components/product';
 
 const COUNT_PRODUCTS_IN_ROW = 4;
 const MAX_PRODUCTS_IN_ROW = 12;
 
-const ProductsList = ({products} ) => {
+const ProductsList = (props) => {
     let rowId = 0;
+    const { products } = props;
     const rows = _.reduce(_.keys(products), (rows, productId, index) => {
         let row;
 
@@ -31,23 +33,29 @@ const ProductsList = ({products} ) => {
 
     return (
         <div className="products-list">
-            {
-                rows.map((row) => (
-                    <div className="row" key={row.id}>
-                        {
-                            row.products.map((product) =>(
-                                <div className={`col-lg-${productWidth}`} key={product.id}>
-                                    <Product {...product} />
-                                </div>
-                            ))
-                        }
-                    </div>
-                ))
-            }
+            <a type="button" className="btn btn-default btn-sm" onClick={() => props.removeAll()}>
+                <span className="glyphicon glyphicon-trash" aria-hidden="true" />&nbsp;Remove all
+            </a>
+            <div className="products-list__body">
+                {
+                    rows.map((row) => (
+                        <div className="row" key={row.id}>
+                            {
+                                row.products.map((product) => (
+                                    <div className={`col-lg-${productWidth}`} key={product.id}>
+                                        <Product {...product} onRemove={() => props.removeProduct(product.id)} />
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     )
 };
 
 export default connect(
-    state => state
+    state => state,
+    { removeAll, removeProduct }
 )(ProductsList);

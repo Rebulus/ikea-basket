@@ -27,6 +27,7 @@ var cssLoader = [
     { 
         test: /\.css$/,
         include: [
+            dir('client'),
             dir('node_modules/bootstrap')
         ],
         loader: ExtractTextPlugin.extract("style-loader", "css-loader")

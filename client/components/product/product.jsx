@@ -32,10 +32,15 @@ export default (props) => {
                         <div className="panel-body">
                             <div className="container-fluid">
                                 <div className="row">
-                                    <h4 className="col-lg-6">
+                                    <h4 className="col-lg-5">
                                         <a href={props.url} target="_blank">{props.name}</a>
                                     </h4>
-                                    <h5 className="col-lg-6 text-right">{formatProductNumber(props.productNumber)}</h5>
+                                    <h5 className="col-lg-5 text-right">{formatProductNumber(props.productNumber)}</h5>
+                                    <div className="col-lg-2">
+                                        <a type="button" className="btn btn-default btn-sm" onClick={() => props.onRemove()}>
+                                            <span className="glyphicon glyphicon-trash" aria-hidden="true" />
+                                        </a>
+                                    </div>
                                     <p className="col-lg-12">{props.facts}</p>
                                 </div>
                             </div>
@@ -46,6 +51,8 @@ export default (props) => {
                             <dl className="dl-horizontal">
                                 <dt>Weight:</dt>
                                 <dd>{calculateWeight(props.packages)}</dd>
+                                <dt>Packages count:</dt>
+                                <dd>{props.packages.length}</dd>
                             </dl>
                         </div>
                     )

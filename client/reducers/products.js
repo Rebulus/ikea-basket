@@ -1,6 +1,6 @@
 import {
-    REMOVE_PRODUCT, REQUEST_PRODUCT,
-    RECEIVE_PRODUCT
+    REMOVE_PRODUCT, REMOVE_ALL, 
+    REQUEST_PRODUCT, RECEIVE_PRODUCT
 } from '../actions'
 import _ from 'lodash';
 
@@ -15,6 +15,8 @@ const products = (state = {}, action) => {
             state = _.clone(state);
             delete state[action.payload.id];
             return state;
+        case REMOVE_ALL:
+            return {};
         default:
             return state;
     }
