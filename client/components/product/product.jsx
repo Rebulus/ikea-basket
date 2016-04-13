@@ -47,7 +47,7 @@ class Amount extends React.Component {
         }
     }
 
-    render(props) {
+    render() {
         return (
             <div className="input-group input-sm">
             <span className="input-group-btn">
