@@ -51,7 +51,20 @@ export const RECEIVE_PRODUCT = 'RECEIVE_PRODUCT';
 export const receiveProduct = (product) => {
     return {
         type: RECEIVE_PRODUCT,
-        payload: product
+        payload: _.extend(product, {
+            amount: 1
+        })
+    }
+};
+
+export const CHANGE_AMOUNT = 'CHANGE_AMOUNT';
+export const changeAmount = (productId, newAmount) => {
+    return {
+        type: CHANGE_AMOUNT,
+        payload: {
+            id: productId,
+            newAmount: newAmount
+        }
     }
 };
 

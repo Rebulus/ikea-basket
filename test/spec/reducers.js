@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import _ from 'lodash';
 import deepFreeze from 'deep-freeze';
 import ikeaBasket from '../../client/reducers';
 import * as actions from '../../client/actions';
@@ -12,7 +13,8 @@ describe('reducers', function() {
             productNumber: '089367',
             locale: 'ru',
             lang: 'ru',
-            name: 'Some product'
+            name: 'Some product',
+            amount: 1
         };
         this.productRequestParams = {
             productNumber: this.product.productNumber,
@@ -83,6 +85,24 @@ describe('reducers', function() {
         };
 
         expect(ikeaBasket(store, actions.removeAll())).to.be.deep.equal(expectedStore);
+    });
+
+    it('should change amount of product', function() {
+        const store = {
+            products: {
+                [this.productId]: this.product
+            }
+        };
+        deepFreeze(store);
+        const expectedStore = {
+            products: {
+                [this.productId]: _.extend(this.product, {
+                    amount: 2
+                })
+            }
+        };
+
+        expect(ikeaBasket(store, actions.changeAmount(this.productId, 2))).to.be.deep.equal(expectedStore);
     })
 
 });

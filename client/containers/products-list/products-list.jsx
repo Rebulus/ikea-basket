@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { removeAll, removeProduct } from '../../actions'
+import { removeAll, removeProduct, changeAmount } from '../../actions'
 import Product from '../../components/product';
 
 const COUNT_PRODUCTS_IN_ROW = 4;
@@ -43,7 +43,9 @@ const ProductsList = (props) => {
                             {
                                 row.products.map((product) => (
                                     <div className={`col-lg-${productWidth}`} key={product.id}>
-                                        <Product {...product} onRemove={() => props.removeProduct(product.id)} />
+                                        <Product {...product} 
+                                            onRemove={() => props.removeProduct(product.id)}
+                                            onChangeAmount={(amount) => props.changeAmount(product.id, amount)}/>
                                     </div>
                                 ))
                             }
@@ -57,5 +59,5 @@ const ProductsList = (props) => {
 
 export default connect(
     state => state,
-    { removeAll, removeProduct }
+    { removeAll, removeProduct, changeAmount }
 )(ProductsList);

@@ -10,7 +10,8 @@ describe('actions', function() {
             productNumber: '089367',
             locale: 'ru',
             lang: 'ru',
-            name: 'Some product'
+            name: 'Some product',
+            amount: 1
         };
         this.productRequestParams = {
             productNumber: this.product.productNumber,
@@ -62,6 +63,18 @@ describe('actions', function() {
         };
 
         expect(actions.receiveProduct(this.product)).to.be.deep.equal(expectedData);
+    });
+
+    it('should create an action to change amount of product', function() {
+        const expectedData = {
+            type: actions.CHANGE_AMOUNT,
+            payload: {
+                id: this.productId,
+                newAmount: 2
+            }
+        };
+
+        expect(actions.changeAmount(this.productId, 2)).to.be.deep.equal(expectedData);
     });
     
     describe('async -> ', function() {
