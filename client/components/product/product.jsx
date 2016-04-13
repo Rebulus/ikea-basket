@@ -11,10 +11,12 @@ export const formatProductNumber = (productNumber) => {
 };
 
 export const calculateWeight = (packages) => {
-    return _.reduce(packages, function(result, packagesItem) {
+    var result = _.reduce(packages, function(result, packagesItem) {
         var weight = getFirstProperty(packagesItem, 'pkgInfo.weightMet').replace(',', '.').trim();
         return result + parseFloat(weight);
     }, 0);
+
+    return result.toFixed(2);
 };
 
 export default (props) => {

@@ -59,7 +59,7 @@ export const receiveProduct = (product) => {
  * Fetch product data by product's parameters
  * @param {Product~params} params product's parameters
  */
-function fetchProduct(params) {
+export const fetchProduct = (params) => {
     const { locale, lang, productNumber } = params;
     return (dispatch) => {
         dispatch(requestProduct(params));
@@ -69,7 +69,7 @@ function fetchProduct(params) {
                 dispatch(receiveProduct(product))
             })
     };
-}
+};
 
 function shouldFetchProduct(state, productId) {
     const product = state.products[productId];
