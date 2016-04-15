@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import * as actions from '../../client/actions';
+import * as actions from '../../../client/actions/products';
 
-describe('actions', function() {
-    
+describe('products actions', function() {
+
     beforeEach(function () {
         this.productId = 'ru-ru-089367';
         this.product = {
@@ -26,26 +26,6 @@ describe('actions', function() {
             lang: this.product.lang
         };
     });
-    
-    it('should create an action to remove a product', function() {
-        const expectedData = {
-            type: actions.REMOVE_PRODUCT,
-            payload: {
-                id: this.productId
-            }
-        };
-        
-        expect(actions.removeProduct(this.productId)).to.be.deep.equal(expectedData);
-    });
-    
-    it('should create an action to remove all products', function() {
-        const expectedData = {
-            type: actions.REMOVE_ALL,
-            payload: {}
-        };
-        
-        expect(actions.removeAll()).to.be.deep.equal(expectedData);
-    });
 
     it('should create an action to request a product', function() {
         const expectedData = {
@@ -55,7 +35,7 @@ describe('actions', function() {
 
         expect(actions.requestProduct(this.productRequestParams)).to.be.deep.equal(expectedData);
     });
-    
+
     it('should create an action to receive a product', function() {
         const expectedData = {
             type: actions.RECEIVE_PRODUCT,
@@ -65,40 +45,47 @@ describe('actions', function() {
         expect(actions.receiveProduct(this.product)).to.be.deep.equal(expectedData);
     });
 
-    it('should create an action to change amount of product', function() {
-        const expectedData = {
-            type: actions.CHANGE_AMOUNT,
-            payload: {
-                id: this.productId,
-                newAmount: 2
-            }
-        };
-
-        expect(actions.changeAmount(this.productId, 2)).to.be.deep.equal(expectedData);
-    });
-    
     describe('async -> ', function() {
         beforeEach(function() {
             this.store = this.mockStore({ products: {} });
-            
+
             this.apiUrl = `/api/${this.product.locale}/${this.product.lang}/products/${this.product.productNumber}`;
             this.productUrl = `http://www.ikea.com/${this.product.locale}/${this.product.lang}/catalog/products/${this.product.productNumber}/`;
             this.fetchMock.mock(this.apiUrl, 'get', this.product);
         });
-        
+
         afterEach(function() {
             this.store.clearActions();
         });
-        
+
+        it('should create an action to fetch a product, if it isn\'t fetched', function(done) {
+            this.store = this.mockStore({ products: {} });
+            
+            const expectedActions = [
+                { type: actions.REQUEST_PRODUCT, payload: this.productRequest },
+                { type: actions.RECEIVE_PRODUCT, payload: this.product }
+            ];
+            this.store.dispatch(actions.fetchProductIfNeeded(this.productUrl))
+                .then(() => {
+                    expect(this.store.getActions()).to.be.deep.equal(expectedActions);
+                    expect(this.fetchMock.called(this.apiUrl)).to.be.true;
+                })
+                .then(done).catch(done);
+        });
+
         [
             {
-                it: 'should create an action to fetch a product, if it isn\'t fetched',
+                it: 'should not create an action to fetch a product, if it is fetching',
                 store: function() {
-                    this.store = this.mockStore({ products: {} });
+                    this.store = this.mockStore({
+                        products: {
+                            [this.productId]: this.productRequest
+                        }
+                    });
                 }
             },
             {
-                it: 'should create an action to fetch a product, if it is fetched',
+                it: 'should not create an action to fetch a product, if it is fetched',
                 store: function() {
                     this.store = this.mockStore({
                         products: {
@@ -110,32 +97,14 @@ describe('actions', function() {
         ].forEach(function(assertItem) {
             it(assertItem.it, function(done) {
                 assertItem.store.apply(this);
-                const expectedActions = [
-                    { type: actions.REQUEST_PRODUCT, payload: this.productRequest },
-                    { type: actions.RECEIVE_PRODUCT, payload: this.product }
-                ];
                 this.store.dispatch(actions.fetchProductIfNeeded(this.productUrl))
                     .then(() => {
-                        expect(this.store.getActions()).to.be.deep.equal(expectedActions);
-                        expect(this.fetchMock.called(this.apiUrl)).to.be.true;
+                        expect(this.store.getActions()).to.be.deep.equal([]);
+                        expect(this.fetchMock.called(this.apiUrl)).to.be.false;
                     })
                     .then(done).catch(done);
             })
         });
-        
-        it('should not create an action to fetch a product, if it is fetching', function(done) {
-            this.store = this.mockStore({
-                products: {
-                    [this.productId]: this.productRequest
-                }
-            });
-            this.store.dispatch(actions.fetchProductIfNeeded(this.productUrl))
-                .then(() => {
-                    expect(this.store.getActions()).to.be.deep.equal([]);
-                    expect(this.fetchMock.called(this.apiUrl)).to.be.false;
-                })
-                .then(done).catch(done);
-        });
     })
-    
+
 });

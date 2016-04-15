@@ -17,6 +17,15 @@ export const getFirstProperty = (object, path) => {
     return Array.isArray(object) ? object[0] : object;
 };
 
+const s4 = () => (
+    Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1)
+);
+
+export const guid = () => (s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4());
+
 export default {
-    getFirstProperty
+    getFirstProperty,
+    guid
 };

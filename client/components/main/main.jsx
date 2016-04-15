@@ -1,7 +1,5 @@
 import React from 'react';
-import Navigation from '../navigation';
-import AddProduct from '../../containers/add-product';
-import ProductsList from '../../containers/products-list';
+import Lists from '../../containers/lists';
 
 export default () => {
     const locations = [
@@ -17,11 +15,7 @@ export default () => {
     
     return (
         <div className="ikea-basket">
-            <Navigation locations={locations}/>
-            <AddProduct />
-            <div className="container-fluid">
-                <ProductsList />
-            </div>
+            <Lists />
         </div>
     )
 }

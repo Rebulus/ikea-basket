@@ -12,7 +12,7 @@ var babelLoader = {
         dir('server')
     ],
     loader: 'babel',
-    query: { 'presets': ['react', 'es2015'] }
+    query: { 'presets': ['react', 'es2015', 'stage-0'] }
 };
 
 var jadeLoader = {

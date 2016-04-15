@@ -7,7 +7,7 @@ import thunkMiddleware from 'redux-thunk';
 import { Provider } from 'react-redux';
 import persistState from 'redux-localstorage';
 import createLogger from 'redux-logger';
-import { fetchProduct } from './actions'
+import { fetchProduct } from './actions/products'
 import Main from './components/main';
 
 // Project styles
@@ -24,9 +24,7 @@ const createPersistentStore = compose(
     })
 )(createStore);
 
-const store = createPersistentStore(
-    reducers
-);
+const store = createPersistentStore(reducers);
 
 // Recall request from the previous not received products
 _.each(store.getState().products, function(product) {
