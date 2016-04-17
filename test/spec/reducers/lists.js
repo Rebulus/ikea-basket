@@ -33,12 +33,14 @@ describe('lists reducer', function() {
     
     describe('operation with list ->', function() {
         it('should add the first list', function() {
-            const store = {};
-            deepFreeze(store);
+            const store = undefined;
 
             this.listGuid.returns(this.list1Id);
             const expectedStore = {
-                [this.list1Id]: this.list1
+                items: {
+                    [this.list1Id]: this.list1
+                },
+                current: this.list1Id
             };
 
             expect(listsReducer(store, listsActions.addList())).to.be.deep.equal(expectedStore);
@@ -46,14 +48,20 @@ describe('lists reducer', function() {
         
         it('should add the second list', function() {
             const store = {
-                [this.list1Id]: this.list1
+                items: {
+                    [this.list1Id]: this.list1
+                },
+                current: this.list1Id
             };
             deepFreeze(store);
 
             this.listGuid.returns(this.list2Id);
             const expectedStore = {
-                [this.list1Id]: this.list1,
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
             };
 
             expect(listsReducer(store, listsActions.addList())).to.be.deep.equal(expectedStore);
@@ -61,24 +69,51 @@ describe('lists reducer', function() {
 
         it('should not replace the lists, when a new list added', function() {
             this.listGuid.restore();
-            let store = {};
-            deepFreeze(store);
+            let store = undefined;
 
             _.times(10, function() {
                 store = listsReducer(store, listsActions.addList());
+                deepFreeze(store);
             });
 
-            expect(_.keys(store)).to.be.length(10);
+            expect(_.keys(store.items)).to.be.length(10);
+        });
+        
+        it('should select list', function() {
+            const store = {
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list1Id
+            };
+            deepFreeze(store);
+
+            const expectedStore = {
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
+            };
+
+            expect(listsReducer(store, listsActions.selectList(this.list2Id))).to.be.deep.equal(expectedStore);
         });
 
         it('should remove the first list', function() {
             const store = {
-                [this.list1Id]: this.list1,
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list1Id
             };
             deepFreeze(store);
             const expectedStore = {
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
             };
 
             expect(listsReducer(store, listsActions.removeList(this.list1Id))).to.be.deep.equal(expectedStore);
@@ -86,12 +121,18 @@ describe('lists reducer', function() {
 
         it('should remove the second list', function() {
             const store = {
-                [this.list1Id]: this.list1,
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
             };
             deepFreeze(store);
             const expectedStore = {
-                [this.list1Id]: this.list1
+                items: {
+                    [this.list1Id]: this.list1
+                },
+                current: this.list1Id
             };
 
             expect(listsReducer(store, listsActions.removeList(this.list2Id))).to.be.deep.equal(expectedStore);
@@ -99,11 +140,17 @@ describe('lists reducer', function() {
         
         it('should remove the both lists', function() {
             const store = {
-                [this.list1Id]: this.list1,
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
             };
             deepFreeze(store);
-            const expectedStore = {};
+            const expectedStore = {
+                items: {},
+                current: null
+            };
             
             let resultStore = listsReducer(store, listsActions.removeList(this.list1Id));
             deepFreeze(resultStore);
@@ -111,22 +158,47 @@ describe('lists reducer', function() {
 
             expect(resultStore).to.be.deep.equal(expectedStore);
         });
+
+        it('should not change current, if removed not current list', function() {
+            const store = {
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
+            };
+            deepFreeze(store);
+            const expectedStore = {
+                items: {
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
+            };
+
+            expect(listsReducer(store, listsActions.removeList(this.list1Id))).to.be.deep.equal(expectedStore);
+        });
     });
 
     describe('add a product in list ->', function() {
         it('should add the first product in list', function() {
             const store = {
-                [this.list1Id]: this.list1,
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list1Id
             };
             deepFreeze(store);
             const expectedStore = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [
-                        this.product1
-                    ]
-                }),
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [
+                            this.product1
+                        ]
+                    }),
+                    [this.list2Id]: this.list2
+                },
+                current: this.list1Id
             };
 
             expect(listsReducer(store, listActions.addProduct(this.list1Id, this.product1.id)))
@@ -135,20 +207,26 @@ describe('lists reducer', function() {
 
         it('should add the second product in list', function() {
             const store = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [this.product1]
-                }),
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [this.product1]
+                    }),
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
             };
             deepFreeze(store);
             const expectedStore = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [
-                        this.product1,
-                        this.product2
-                    ]
-                }),
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [
+                            this.product1,
+                            this.product2
+                        ]
+                    }),
+                    [this.list2Id]: this.list2
+                },
+                current: this.list2Id
             };
 
             expect(listsReducer(store, listActions.addProduct(this.list1Id, this.product2.id)))
@@ -157,17 +235,23 @@ describe('lists reducer', function() {
 
         it('should add products in different lists', function() {
             const store = {
-                [this.list1Id]: this.list1,
-                [this.list2Id]: this.list2
+                items: {
+                    [this.list1Id]: this.list1,
+                    [this.list2Id]: this.list2
+                },
+                current: this.list1Id
             };
             deepFreeze(store);
             const expectedStore = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [this.product1]
-                }),
-                [this.list2Id]: _.extend({}, this.list2, {
-                    products: [this.product1]
-                })
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [this.product1]
+                    }),
+                    [this.list2Id]: _.extend({}, this.list2, {
+                        products: [this.product1]
+                    })
+                },
+                current: this.list1Id
             };
             let resultStore = listsReducer(store, listActions.addProduct(this.list1Id, this.product1.id));
             deepFreeze(resultStore);
@@ -180,28 +264,34 @@ describe('lists reducer', function() {
     describe('change product\'s amount ->', function() {
         beforeEach(function() {
             this.store = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [this.product1]
-                }),
-                [this.list2Id]: _.extend({}, this.list2, {
-                    products: [this.product1]
-                })
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [this.product1]
+                    }),
+                    [this.list2Id]: _.extend({}, this.list2, {
+                        products: [this.product1]
+                    })
+                },
+                current: this.list1Id
             };
             deepFreeze(this.store);
         });
         
         it('should change amount of a product in the first list', function() {
             const expectedStore = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [
-                        _.extend({}, this.product1, {
-                            amount: 5
-                        })
-                    ]
-                }),
-                [this.list2Id]: _.extend({}, this.list2, {
-                    products: [this.product1]
-                })
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [
+                            _.extend({}, this.product1, {
+                                amount: 5
+                            })
+                        ]
+                    }),
+                    [this.list2Id]: _.extend({}, this.list2, {
+                        products: [this.product1]
+                    })
+                },
+                current: this.list1Id
             };
 
             expect(listsReducer(this.store, listActions.changeAmount(this.list1Id, this.product1.id, 5)))
@@ -210,16 +300,19 @@ describe('lists reducer', function() {
 
         it('should change amount of a product in the second list', function() {
             const expectedStore = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [this.product1]
-                }),
-                [this.list2Id]: _.extend({}, this.list2, {
-                    products: [
-                        _.extend({}, this.product1, {
-                            amount: 3
-                        })
-                    ]
-                })
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [this.product1]
+                    }),
+                    [this.list2Id]: _.extend({}, this.list2, {
+                        products: [
+                            _.extend({}, this.product1, {
+                                amount: 3
+                            })
+                        ]
+                    })
+                },
+                current: this.list1Id
             };
 
             expect(listsReducer(this.store, listActions.changeAmount(this.list2Id, this.product1.id, 3)))
@@ -228,20 +321,23 @@ describe('lists reducer', function() {
 
         it('should change amount of products in the both lists', function() {
             const expectedStore = {
-                [this.list1Id]: _.extend({}, this.list1, {
-                    products: [
-                        _.extend({}, this.product1, {
-                            amount: 8
-                        })
-                    ]
-                }),
-                [this.list2Id]: _.extend({}, this.list2, {
-                    products: [
-                        _.extend({}, this.product1, {
-                            amount: 4
-                        })
-                    ]
-                })
+                items: {
+                    [this.list1Id]: _.extend({}, this.list1, {
+                        products: [
+                            _.extend({}, this.product1, {
+                                amount: 8
+                            })
+                        ]
+                    }),
+                    [this.list2Id]: _.extend({}, this.list2, {
+                        products: [
+                            _.extend({}, this.product1, {
+                                amount: 4
+                            })
+                        ]
+                    })
+                },
+                current: this.list1Id
             };
             let resultStore = listsReducer(this.store, listActions.changeAmount(this.list1Id, this.product1.id, 8));
             deepFreeze(resultStore);

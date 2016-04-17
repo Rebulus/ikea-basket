@@ -7,11 +7,12 @@ import thunkMiddleware from 'redux-thunk';
 import { Provider } from 'react-redux';
 import persistState from 'redux-localstorage';
 import createLogger from 'redux-logger';
-import { fetchProduct } from './actions/products'
-import Main from './components/main';
 
 // Project styles
-require('../node_modules/bootstrap/dist/css/bootstrap.css');
+import '../node_modules/bootstrap/dist/css/bootstrap.css';
+
+import { fetchProduct } from './actions/products';
+import Main from './components/main';
 
 const loggerMiddleware = createLogger();
 const createPersistentStore = compose(

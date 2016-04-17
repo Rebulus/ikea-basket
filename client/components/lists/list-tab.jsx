@@ -1,5 +1,10 @@
 import React from 'react';
 
+const RemoveButton = (props) => (
+    <span className="glyphicon glyphicon-remove list__remove-list" aria-hidden="true"
+          onClick={(e) => { e.stopPropagation(); props.onRemove(); }}/>
+);
+
 class ListTab extends React.Component {
     state = {
         isRename: false
@@ -31,6 +36,10 @@ class ListTab extends React.Component {
         })
     }
 
+    handleRemove() {
+        this.props.onRemove();
+    }
+
     render() {
         var itemContent;
         if (this.state.isRename) {
@@ -40,6 +49,7 @@ class ListTab extends React.Component {
                            onChange={() => this.handleChangeName()}
                            onKeyDown={(e) => (e.keyCode === 13 ? this.handleCloseRename() : null)}
                            onBlur={() => this.handleCloseRename()}/>
+                    <RemoveButton onRemove={() => this.handleRemove()}/>
                 </a>
             )
         } else {
@@ -48,11 +58,12 @@ class ListTab extends React.Component {
                    onClick={() => this.handleSelect()}
                    onDoubleClick={() => this.handleRename()}>
                     {this.props.name}
+                    <RemoveButton onRemove={() => this.handleRemove()}/>
                 </a>
             )
         }
         return (
-            <li className={this.props.isActive ? 'active' : ''}>
+            <li className={`form-inline ${this.props.isActive ? 'active' : ''}`}>
                 {itemContent}
             </li>
         )

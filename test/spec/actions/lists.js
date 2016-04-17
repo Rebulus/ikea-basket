@@ -19,6 +19,17 @@ describe('lists actions', function() {
         expect(listsActions.addList()).to.be.deep.equal(expectedData);
     });
 
+    it('should create an action to select a list', function() {
+        const expectedData = {
+            type: listsActions.SELECT_LIST,
+            payload: {
+                listId: this.listId
+            }
+        };
+
+        expect(listsActions.selectList(this.listId)).to.be.deep.equal(expectedData);
+    });
+
     it('should create an action to remove a list', function() {
         const expectedData = {
             type: listsActions.REMOVE_LIST,

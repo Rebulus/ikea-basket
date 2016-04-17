@@ -6,7 +6,7 @@ import { getIdByUrl } from '../../../helpers/product';
 // Actions
 import { fetchProductIfNeeded } from '../../actions/products';
 import { editListName, addProduct, changeAmount, removeProduct, removeAll } from '../../actions/list';
-import { addList } from '../../actions/lists';
+import { addList, selectList, removeList } from '../../actions/lists';
 
 // Components
 import { ListTab, AddList } from '../../components/lists';
@@ -14,14 +14,8 @@ import AddProductToList from '../../components/add-product';
 import ProductsList from '../../components/products-list';
 
 class Lists extends React.Component {
-    state = {
-        currentListId: undefined
-    };
-
     handleSelect(listId) {
-        this.setState({
-            currentListId: listId
-        })
+        this.props.selectList(listId);
     }
 
     handleChangeName(id, name) {
@@ -31,16 +25,22 @@ class Lists extends React.Component {
     handleAddList() {
         this.props.addList();
     }
+
+    handleRemoveList(listId) {
+        this.props.removeList(listId);
+    }
     
     handleAddProduct(value) {
         this.props.fetchProductIfNeeded(value);
-        this.props.addProduct(this.state.currentListId, getIdByUrl(value));
+        this.props.addProduct(this.props.lists.current, getIdByUrl(value));
     }
 
     render() {
-        var content = null;
-        if (this.state.currentListId) {
-            const list = this.props.lists[this.state.currentListId];
+        let content = null;
+        const items = this.props.lists.items;
+        const currentListId = this.props.lists.current;
+        if (currentListId) {
+            const list = items[currentListId];
             const products = _.map(list.products, (productAdditional) => (
                 {
                     base: this.props.products[productAdditional.id],
@@ -61,13 +61,14 @@ class Lists extends React.Component {
             <div className="lists-wrapper">
                 <ul className="nav nav-tabs">
                     {
-                        _.map(this.props.lists, (list) => (
-                            <ListTab {...list} isActive={this.state.currentListId === list.id} key={list.id}
+                        _.map(items, (list) => (
+                            <ListTab {...list} isActive={currentListId === list.id} key={list.id}
                                 onSelect={(id) => this.handleSelect(id)}
-                                onChangeName={(id, name) => this.handleChangeName(id, name)}/>
+                                onChangeName={(id, name) => this.handleChangeName(id, name)}
+                                onRemove={() => this.handleRemoveList(list.id)}/>
                         ))
                     }
-                    <AddList isActive={!Boolean(this.state.currentListId)} key="add-list"
+                    <AddList isActive={!Boolean(currentListId)} key="add-list"
                          onAdd={() => this.handleAddList()}/>
                 </ul>
                 {content}
@@ -79,7 +80,8 @@ class Lists extends React.Component {
 export default connect(
     state => state,
     {
-        addList, editListName, fetchProductIfNeeded,
+        addList, selectList, removeList,
+        editListName, fetchProductIfNeeded,
         addProduct, removeProduct, removeAll, changeAmount
     }
 )(Lists);

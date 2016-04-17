@@ -1,0 +1,9 @@
+.list__remove-list {
+    top: 3px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.list__remove-list:hover {
+    color: #aaa;
+}
