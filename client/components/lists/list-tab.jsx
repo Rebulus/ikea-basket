@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 const RemoveButton = (props) => (
     <span className="glyphicon glyphicon-remove list__remove-list" aria-hidden="true"
@@ -26,11 +27,8 @@ class ListTab extends React.Component {
         })
     }
 
-    handleChangeName() {
-        this.props.onChangeName(this.props.id, this.refs.name.value);
-    }
-
     handleCloseRename() {
+        this.props.onChangeName(this.props.id, this.refs.name.value);
         this.setState({
             isRename: false
         })
@@ -45,8 +43,7 @@ class ListTab extends React.Component {
         if (this.state.isRename) {
             itemContent = (
                 <a href="#">
-                    <input ref="name" type="text" className="form-control input-sm" value={this.props.name}
-                           onChange={() => this.handleChangeName()}
+                    <input ref="name" type="text" className="form-control input-sm" defaultValue={this.props.name}
                            onKeyDown={(e) => (e.keyCode === 13 ? this.handleCloseRename() : null)}
                            onBlur={() => this.handleCloseRename()}/>
                     <RemoveButton onRemove={() => this.handleRemove()}/>
@@ -63,7 +60,7 @@ class ListTab extends React.Component {
             )
         }
         return (
-            <li className={`form-inline ${this.props.isActive ? 'active' : ''}`}>
+            <li className={classNames('form-inline', { 'active': this.props.isActive })}>
                 {itemContent}
             </li>
         )

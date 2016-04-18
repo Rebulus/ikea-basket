@@ -32,15 +32,14 @@ class Lists extends React.Component {
     
     handleAddProduct(value) {
         this.props.fetchProductIfNeeded(value);
-        this.props.addProduct(this.props.lists.current, getIdByUrl(value));
+        this.props.addProduct(this.props.lists.present.current, getIdByUrl(value));
     }
 
     render() {
+        const { items, current } = this.props.lists.present;
         let content = null;
-        const items = this.props.lists.items;
-        const currentListId = this.props.lists.current;
-        if (currentListId) {
-            const list = items[currentListId];
+        if (current) {
+            const list = items[current];
             const products = _.map(list.products, (productAdditional) => (
                 {
                     base: this.props.products[productAdditional.id],
@@ -62,13 +61,13 @@ class Lists extends React.Component {
                 <ul className="nav nav-tabs">
                     {
                         _.map(items, (list) => (
-                            <ListTab {...list} isActive={currentListId === list.id} key={list.id}
+                            <ListTab {...list} isActive={current === list.id} key={list.id}
                                 onSelect={(id) => this.handleSelect(id)}
                                 onChangeName={(id, name) => this.handleChangeName(id, name)}
                                 onRemove={() => this.handleRemoveList(list.id)}/>
                         ))
                     }
-                    <AddList isActive={!Boolean(currentListId)} key="add-list"
+                    <AddList isActive={!Boolean(current)} key="add-list"
                          onAdd={() => this.handleAddList()}/>
                 </ul>
                 {content}

@@ -1,7 +1,8 @@
 import React from 'react';
+import classNames from 'classnames';
 
 const AddList = (props) => (
-    <li className={props.isActive ? 'active' : ''}>
+    <li className={classNames({ 'active': props.isActive })}>
         <a href="#" onClick={() => props.onAdd()}>
             <span className="glyphicon glyphicon-plus" aria-hidden="true" />
         </a>

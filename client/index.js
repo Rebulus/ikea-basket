@@ -5,6 +5,7 @@ import { compose, createStore, applyMiddleware } from 'redux'
 import reducers from './reducers'
 import thunkMiddleware from 'redux-thunk';
 import { Provider } from 'react-redux';
+import { ActionCreators } from 'redux-undo';
 import persistState from 'redux-localstorage';
 import createLogger from 'redux-logger';
 
@@ -31,6 +32,16 @@ const store = createPersistentStore(reducers);
 _.each(store.getState().products, function(product) {
     if (product.isFetching) {
         store.dispatch(fetchProduct(product));
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode == 90 && (event.ctrlKey || event.metaKey)) {
+        if (event.shiftKey) {
+            store.dispatch(ActionCreators.redo());
+        } else {
+            store.dispatch(ActionCreators.undo());
+        }
     }
 });
 
