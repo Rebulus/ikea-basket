@@ -1,0 +1,33 @@
+.notifications {
+    width: 50%;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) translateZ(0);
+    z-index: 10;
+}
+
+.notifications .alert {
+    opacity: 0;
+    transition: opacity 0.2s;
+    position: relative;
+    cursor: default;
+}
+
+.notifications .alert + .alert {
+    margin-top: -70px;
+}
+
+.notifications .alert-show {
+    opacity: 1;
+}
+
+.notifications .alert-hide {
+    opacity: 0;
+}
+
+.notifications .btn {
+    position: absolute;
+    right: 15px;
+    top: 8px;
+}

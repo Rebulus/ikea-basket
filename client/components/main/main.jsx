@@ -1,5 +1,6 @@
 import React from 'react';
 import Lists from '../../containers/lists';
+import Notifications from '../../containers/notifications';
 
 export default () => {
     const locations = [
@@ -15,6 +16,7 @@ export default () => {
     
     return (
         <div className="ikea-basket">
+            <Notifications />
             <Lists />
         </div>
     )

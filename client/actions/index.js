@@ -1,9 +1,11 @@
-import * as product from './product';
+import * as products from './products';
 import * as list from './list';
 import * as lists from './lists';
+import * as notifications from './notifications';
 
 export default {
-    product,
+    products,
     list,
-    lists
+    lists,
+    notifications
 }

@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import persistState from 'redux-localstorage';
 import createLogger from 'redux-logger';
+import { addNotification, removeAllNotifications } from './actions/notifications';
 
 // Project styles
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
@@ -22,7 +23,19 @@ const createPersistentStore = compose(
         loggerMiddleware
     ),
     persistState(null, {
-        key: 'ikea-basket'
+        key: 'ikea-basket',
+        slicer: (paths) => (state) => {
+            state = _.clone(state);
+            state.lists = state.lists.present;
+            delete state.notifications;
+            return state;
+        },
+        merge: (initialState, persistedState) => {
+            const state = _.clone(initialState) || reducers(undefined, {});
+            state.lists.present = persistedState.lists;
+            state.products = persistedState.products;
+            return state;
+        }
     })
 )(createStore);
 
