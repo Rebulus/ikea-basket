@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 const AddList = (props) => (
     <li className={classNames({ 'active': props.isActive })}>
-        <a href="#" onClick={() => props.onAdd()}>
+        <a href="#" onClick={(e) => { e.preventDefault(); props.onAdd() }}>
             <span className="glyphicon glyphicon-plus" aria-hidden="true" />
         </a>
     </li>

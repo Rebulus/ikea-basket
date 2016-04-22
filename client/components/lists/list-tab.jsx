@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 const RemoveButton = (props) => (
     <span className="glyphicon glyphicon-remove list__remove-list" aria-hidden="true"
-          onClick={(e) => { e.stopPropagation(); props.onRemove(); }}/>
+          onClick={(e) => { e.stopPropagation(); e.preventDefault(); props.onRemove(); }}/>
 );
 
 class ListTab extends React.Component {
@@ -17,7 +17,8 @@ class ListTab extends React.Component {
         }
     }
 
-    handleSelect() {
+    handleSelect(e) {
+        e.preventDefault();
         this.props.onSelect(this.props.id);
     }
 
@@ -52,7 +53,7 @@ class ListTab extends React.Component {
         } else {
             itemContent = (
                 <a href="#"
-                   onClick={() => this.handleSelect()}
+                   onClick={(e) => this.handleSelect(e)}
                    onDoubleClick={() => this.handleRename()}>
                     {this.props.name}
                     <RemoveButton onRemove={() => this.handleRemove()}/>
