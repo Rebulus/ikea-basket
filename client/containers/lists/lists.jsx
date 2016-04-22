@@ -7,6 +7,7 @@ import { getIdByUrl } from '../../../helpers/product';
 import { fetchProductIfNeeded } from '../../actions/products';
 import { editListName, addProduct, changeAmount, removeProduct, removeAll } from '../../actions/list';
 import { addList, selectList, removeList } from '../../actions/lists';
+import { addNotification } from '../../actions/notifications';
 
 // Components
 import { ListTab, AddList } from '../../components/lists';
@@ -31,8 +32,16 @@ class Lists extends React.Component {
     }
     
     handleAddProduct(value) {
+        const productId = getIdByUrl(value);
+        const { items, current } = this.props.lists.present;
+
         this.props.fetchProductIfNeeded(value);
-        this.props.addProduct(this.props.lists.present.current, getIdByUrl(value));
+
+        if (_.find(items[current].products, [ 'id', productId ])) {
+            this.props.addNotification('warning', `You have already had this product at the "${items[current].name}" list.`);
+        } else {
+            this.props.addProduct(current, productId);
+        }
     }
 
     render() {
@@ -81,6 +90,7 @@ export default connect(
     {
         addList, selectList, removeList,
         editListName, fetchProductIfNeeded,
-        addProduct, removeProduct, removeAll, changeAmount
+        addProduct, removeProduct, removeAll, changeAmount,
+        addNotification
     }
 )(Lists);
