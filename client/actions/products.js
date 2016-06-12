@@ -48,20 +48,6 @@ export const errorReceiveProduct = (error) => (
 );
 
 /**
- * Dispatch error actions
- * @param {Function} dispatch
- * @param {string} productId
- * @param {Object} errorData
- */
-const dispatchReceiveError = (dispatch, productId, errorData) => {
-    dispatch(errorReceiveProduct({
-        id: productId,
-        ...errorData
-    }));
-    dispatch(addNotification('danger', errorData.error));
-};
-
-/**
  * Fetch product data by product's parameters
  * @param {Product~params} params product's parameters
  */
@@ -73,20 +59,20 @@ export const fetchProduct = (params) => {
             fetch(`/api/${locale}/${lang}/products/${productNumber}`)
                 .then(
                     (response) => response.json(),
-                    (response) => response.json()
+                    (error) => ({ error: 'Failed connection. Please, try again later.' })
                 )
                 .then(
                     (product) => {
                         if (product.error) {
-                            dispatchReceiveError(dispatch, getId(params), product);
+                            dispatch(errorReceiveProduct({
+                                id: getId(params),
+                                ...product
+                            }));
+                            dispatch(addNotification('danger', product.error));
                         } else {
                             dispatch(receiveProduct(product));
                         }
                         resolve(product);
-                    },
-                    (errorData) => {
-                        dispatchReceiveError(dispatch, getId(params), errorData);
-                        resolve(errorData);
                     }
                 )
         });
