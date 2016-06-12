@@ -30,6 +30,10 @@ export const getProductsRows = (products) => {
 
 export const getFullPrice = (products) => {
     let fullPrice = _.reduce(products, function(result, product) {
+        // Exclude fetching products
+        if (product.base.isFetching) {
+            return result;
+        }
         return result + product.base.price * product.additional.amount;
     }, 0);
     if (isNaN(fullPrice)) {
