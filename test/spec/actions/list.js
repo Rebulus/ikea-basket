@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import * as listActions from '../../../client/actions/list';
+import * as notificationsActions from '../../../client/actions/notifications';
 
 describe('list actions', function() {
 
@@ -70,5 +71,68 @@ describe('list actions', function() {
 
         expect(listActions.removeAll(this.listId)).to.be.deep.equal(expectedData);
     });
+
+    describe('check existence of product ->', function() {
+        afterEach(function() {
+            this.store.clearActions();
+        });
+
+        it('should create an action to add a product, if it is not existed', function() {
+            this.store = this.mockStore({
+                lists: {
+                    present: {
+                        items: {
+                            [this.listId]: {
+                                id: this.listId,
+                                products: []
+                            }
+                        }
+                    }
+                }
+            });
+            this.store.dispatch(listActions.addNotExistProduct(this.listId, this.productId));
+            expect(this.store.getActions()).to.be.deep.equal([
+                {
+                    type: listActions.ADD_PRODUCT,
+                    payload: {
+                        listId: this.listId,
+                        product: {
+                            id: this.productId,
+                            amount: 1
+                        }
+                    }
+                }
+            ])
+        });
+
+        it('should create an notification action, if it is existed', function() {
+            this.store = this.mockStore({
+                lists: {
+                    present: {
+                        items: {
+                            [this.listId]: {
+                                id: this.listId,
+                                products: [{
+                                    id: this.productId,
+                                    amount: 1
+                                }]
+                            }
+                        }
+                    }
+                }
+            });
+            this.store.dispatch(listActions.addNotExistProduct(this.listId, this.productId));
+            var actions = this.store.getActions();
+            var expectedNotificationPayload = {
+                id: actions[0].payload.id,
+                type: 'warning',
+                message: actions[0].payload.message
+            };
+            expect(actions).to.be.deep.equal([
+                { type: notificationsActions.ADD_NOTIFICATION, payload: expectedNotificationPayload }
+            ])
+        })
+    });
+
 
 });

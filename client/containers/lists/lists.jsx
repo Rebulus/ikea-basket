@@ -5,7 +5,7 @@ import { getIdByUrl } from '../../../helpers/product';
 
 // Actions
 import { fetchProductIfNeeded } from '../../actions/products';
-import { editListName, addProduct, changeAmount, removeProduct, removeAll } from '../../actions/list';
+import { editListName, addNotExistProduct, changeAmount, removeProduct, removeAll } from '../../actions/list';
 import { addList, selectList, removeList } from '../../actions/lists';
 import { addNotification } from '../../actions/notifications';
 
@@ -31,21 +31,19 @@ class Lists extends React.Component {
         this.props.removeList(listId);
     }
     
-    handleAddProduct(value) {
-        const productId = getIdByUrl(value);
-        const { items, current } = this.props.lists.present;
+    handleAddProduct(productUrl) {
+        const productId = getIdByUrl(productUrl);
+        const { current } = this.props.lists;
 
-        this.props.fetchProductIfNeeded(value);
-
-        if (_.find(items[current].products, [ 'id', productId ])) {
-            this.props.addNotification('warning', `You have already had this product at the "${items[current].name}" list.`);
-        } else {
-            this.props.addProduct(current, productId);
+        // TODO - maybe need combine this 2 actions in one
+        this.props.fetchProductIfNeeded(productUrl);
+        if (productId) {
+            this.props.addNotExistProduct(current, productId);
         }
     }
 
     render() {
-        const { items, current } = this.props.lists.present;
+        const { items, current } = this.props.lists;
         let content = null;
         if (current) {
             const list = items[current];
@@ -86,11 +84,16 @@ class Lists extends React.Component {
 }
 
 export default connect(
-    state => state,
+    state => (
+        {
+            products: state.products,
+            lists: state.lists.present
+        }
+    ),
     {
         addList, selectList, removeList,
         editListName, fetchProductIfNeeded,
-        addProduct, removeProduct, removeAll, changeAmount,
+        addNotExistProduct, removeProduct, removeAll, changeAmount,
         addNotification
     }
 )(Lists);

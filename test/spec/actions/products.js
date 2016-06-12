@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import * as actions from '../../../client/actions/products';
+import * as productsActions from '../../../client/actions/products';
+import * as notificationsActions from '../../../client/actions/notifications';
 
 describe('products actions', function() {
 
@@ -20,6 +21,7 @@ describe('products actions', function() {
         };
         this.productRequest = {
             id: this.productId,
+            name: `Pending product ${this.product.productNumber}`,
             isFetching: true,
             productNumber: this.product.productNumber,
             locale: this.product.locale,
@@ -29,20 +31,32 @@ describe('products actions', function() {
 
     it('should create an action to request a product', function() {
         const expectedData = {
-            type: actions.REQUEST_PRODUCT,
+            type: productsActions.REQUEST_PRODUCT,
             payload: this.productRequest
         };
 
-        expect(actions.requestProduct(this.productRequestParams)).to.be.deep.equal(expectedData);
+        expect(productsActions.requestProduct(this.productRequestParams)).to.be.deep.equal(expectedData);
     });
 
     it('should create an action to receive a product', function() {
         const expectedData = {
-            type: actions.RECEIVE_PRODUCT,
+            type: productsActions.RECEIVE_PRODUCT,
             payload: this.product
         };
 
-        expect(actions.receiveProduct(this.product)).to.be.deep.equal(expectedData);
+        expect(productsActions.receiveProduct(this.product)).to.be.deep.equal(expectedData);
+    });
+
+    it('should create an action to an error of product', function() {
+        const errorData = {
+            error: 'Some message'
+        };
+        const expectedData = {
+            type: productsActions.ERROR_RECEIVE_PRODUCT,
+            payload: errorData
+        };
+
+        expect(productsActions.errorReceiveProduct(errorData)).to.be.deep.equal(expectedData);
     });
 
     describe('async -> ', function() {
@@ -62,15 +76,30 @@ describe('products actions', function() {
             this.store = this.mockStore({ products: {} });
             
             const expectedActions = [
-                { type: actions.REQUEST_PRODUCT, payload: this.productRequest },
-                { type: actions.RECEIVE_PRODUCT, payload: this.product }
+                { type: productsActions.REQUEST_PRODUCT, payload: this.productRequest },
+                { type: productsActions.RECEIVE_PRODUCT, payload: this.product }
             ];
-            this.store.dispatch(actions.fetchProductIfNeeded(this.productUrl))
+            this.store.dispatch(productsActions.fetchProductIfNeeded(this.productUrl))
                 .then(() => {
                     expect(this.store.getActions()).to.be.deep.equal(expectedActions);
                     expect(this.fetchMock.called(this.apiUrl)).to.be.true;
                 })
                 .then(done).catch(done);
+        });
+
+        it('should create a notification action, if product url can\'t be parsed', function() {
+            return this.store.dispatch(productsActions.fetchProductIfNeeded('abcd'))
+                .then(() => {
+                    var actions = this.store.getActions();
+                    var expectedNotificationPayload = {
+                        id: actions[0].payload.id,
+                        type: 'danger',
+                        message: actions[0].payload.message
+                    };
+                    expect(actions).to.be.deep.equal([
+                        { type: notificationsActions.ADD_NOTIFICATION, payload: expectedNotificationPayload }
+                    ])
+                });
         });
 
         [
@@ -97,7 +126,7 @@ describe('products actions', function() {
         ].forEach(function(assertItem) {
             it(assertItem.it, function(done) {
                 assertItem.store.apply(this);
-                this.store.dispatch(actions.fetchProductIfNeeded(this.productUrl))
+                this.store.dispatch(productsActions.fetchProductIfNeeded(this.productUrl))
                     .then(() => {
                         expect(this.store.getActions()).to.be.deep.equal([]);
                         expect(this.fetchMock.called(this.apiUrl)).to.be.false;

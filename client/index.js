@@ -31,8 +31,10 @@ const createPersistentStore = compose(
         },
         merge: (initialState, persistedState) => {
             const state = _.clone(initialState) || reducers(undefined, {});
-            state.lists.present = persistedState.lists;
-            state.products = persistedState.products;
+            if (persistedState) {
+                state.lists.present = persistedState.lists;
+                state.products = persistedState.products;
+            }
             return state;
         }
     })

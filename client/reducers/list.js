@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 // Actions
+import * as productsActions from '../actions/products';
 import {
     EDIT_LIST_NAME,
     ADD_PRODUCT, REMOVE_PRODUCT, REMOVE_ALL,
@@ -47,9 +48,16 @@ const list = (state = { name: 'NoName', products: [] }, action) => {
             state.products = [];
             return state;
 
+        // Lists actions
         case listsActions.ADD_LIST:
             state = _.clone(state);
             state.id = action.payload.listId;
+            return state;
+
+        // Product actions:
+        case productsActions.ERROR_RECEIVE_PRODUCT:
+            state = _.clone(state);
+            state.products = _.differenceBy(state.products, [{ id: action.payload.id }], 'id');
             return state;
 
         default:

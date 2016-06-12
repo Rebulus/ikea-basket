@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 // Actions
+import * as productsActions from '../actions/products';
 import * as listActions from '../actions/list';
 import {
     ADD_LIST, SELECT_LIST, REMOVE_LIST
@@ -70,7 +71,15 @@ const lists = (reducer, listActions) => (state = { items: {}, current: null }, a
             state.items = _.clone(state.items);
             state.items[action.payload.listId] = reducer(state.items[action.payload.listId], action);
             return state;
-        
+        // Product actions:
+        case productsActions.ERROR_RECEIVE_PRODUCT:
+            state = _.clone(state);
+            var items = {};
+            _.each(state.items, function(item, key) {
+                items[key] = reducer(item, action);
+            });
+            state.items = items;
+            return state;
         default:
             return state;
     }

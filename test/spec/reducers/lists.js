@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import _ from 'lodash';
 import deepFreeze from 'deep-freeze';
 import listsReducer from '../../../client/reducers/lists';
+import * as productsActions from '../../../client/actions/products';
 import * as listActions from '../../../client/actions/list';
 import * as listsActions from '../../../client/actions/lists';
 
@@ -345,6 +346,32 @@ describe('lists reducer', function() {
 
             expect(resultStore).to.be.deep.equal(expectedStore);
         });
+    });
+
+    it('should remove fetching product, if it is loaded with error', function() {
+        const store = {
+            current: this.list1,
+            items: {
+                [this.list1Id]: _.cloneDeep(this.list1),
+                [this.list2Id]: _.cloneDeep(this.list2)
+            }
+        };
+        store.items[this.list1Id].products.push(this.product1);
+        store.items[this.list2Id].products.push(this.product1);
+        const productError = {
+            id: this.product1.id,
+            error: 'Some error message'
+        };
+        deepFreeze(store);
+        const expectedStore = {
+            current: this.list1,
+            items: {
+                [this.list1Id]: this.list1,
+                [this.list2Id]: this.list2
+            }
+        };
+
+        expect(listsReducer(store, productsActions.errorReceiveProduct(productError))).to.be.deep.equal(expectedStore);
     });
 
 });

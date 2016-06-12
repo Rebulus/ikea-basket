@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import { addNotification } from './notifications';
+
 export const EDIT_LIST_NAME = 'EDIT_LIST_NAME';
 export const editListName = (listId, newName) => (
     {
@@ -55,3 +58,13 @@ export const removeAll = (listId) => (
         }
     }
 );
+
+export const addNotExistProduct = (listId, productId) => (dispatch, getState) => {
+    var state = getState();
+    var list = state.lists.present.items[listId];
+    if (_.find(list.products, [ 'id', productId ])) {
+        dispatch(addNotification('warning', `You have this product at the "${list.name}" list.`))
+    } else {
+        dispatch(addProduct(listId, productId));
+    }
+};

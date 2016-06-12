@@ -5,8 +5,8 @@ export const helpers = {
 };
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
-export const addNotification = (type, message) => {
-    return {
+export const addNotification = (type, message) => (
+    {
         type: ADD_NOTIFICATION,
         payload: {
             id: helpers.guid(),
@@ -14,22 +14,22 @@ export const addNotification = (type, message) => {
             message
         }
     }
-};
+);
 
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
-export const removeNotification = (id) => {
-    return {
+export const removeNotification = (id) => (
+    {
         type: REMOVE_NOTIFICATION,
         payload: {
             id
         }
     }
-};
+);
 
 export const REMOVE_ALL_NOTIFICATIONS = 'REMOVE_ALL_NOTIFICATIONS';
-export const removeAllNotifications = () => {
-    return {
+export const removeAllNotifications = () => (
+    {
         type: REMOVE_ALL_NOTIFICATIONS,
         payload: {}
     }
-};
+);

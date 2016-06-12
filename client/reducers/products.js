@@ -1,5 +1,5 @@
 import {
-    REQUEST_PRODUCT, RECEIVE_PRODUCT
+    REQUEST_PRODUCT, RECEIVE_PRODUCT, ERROR_RECEIVE_PRODUCT
 } from '../actions/products'
 import _ from 'lodash';
 
@@ -9,6 +9,10 @@ const products = (state = {}, action) => {
         case RECEIVE_PRODUCT:
             state = _.clone(state);
             state[action.payload.id] = action.payload;
+            return state;
+        case ERROR_RECEIVE_PRODUCT:
+            state = _.clone(state);
+            delete state[action.payload.id];
             return state;
         default:
             return state;
