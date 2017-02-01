@@ -1,4 +1,4 @@
-import 'whatwg-fetch';
+import { fetchRetry } from '../../helpers/fetch';
 import { getId } from '../../helpers/product';
 import { getProductParams } from '../../helpers/url';
 import { addNotification } from './notifications';
@@ -56,9 +56,10 @@ export const fetchProduct = (params) => {
     return (dispatch) => {
         dispatch(requestProduct(params));
         return new Promise((resolve) => {
-            fetch(`/api/${locale}/${lang}/products/${productNumber}`)
+            fetchRetry(`/api/${locale}/${lang}/products/${productNumber}`, { retries: 3 })
                 .then(
                     (response) => response.json(),
+                    // TODO - need localization
                     (error) => ({ error: 'Failed connection. Please, try again later.' })
                 )
                 .then(

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 /**
- * Apply for each parameters null value. It runs everything possible combinations.
+ * Apply for each parameters null value. It runs every possible combinations.
  * @param {string[]} listOfRequiredParams
  * @param {object} params
  * @param {Function} expectRunner

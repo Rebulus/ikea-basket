@@ -28,19 +28,19 @@ export const getProductsRows = (products) => {
     }, []);
 };
 
-export const getFullPrice = (products) => {
-    let fullPrice = _.reduce(products, function(result, product) {
+export const getTotalProce = (products) => {
+    let totalPrice = _.reduce(products, function(result, product) {
         // Exclude fetching products
         if (product.base.isFetching) {
             return result;
         }
         return result + product.base.price * product.additional.amount;
     }, 0);
-    if (isNaN(fullPrice)) {
-        fullPrice = 0;
+    if (isNaN(totalPrice)) {
+        totalPrice = 0;
     }
 
-    return fullPrice;
+    return totalPrice;
 };
 
 const ProductsList = (props) => {
@@ -53,7 +53,7 @@ const ProductsList = (props) => {
         locale = products[0].base.locale;
     }
     
-    const fullPrice = getFullPrice(products);
+    const fullPrice = getTotalProce(products);
     const productsRows = getProductsRows(products);
 
     return (
@@ -64,7 +64,7 @@ const ProductsList = (props) => {
                         <span className="glyphicon glyphicon-trash" aria-hidden="true" />&nbsp;Remove all
                     </a>
                 </div>
-                <h4 className="col-lg-1">Full price</h4>
+                <h4 className="col-lg-1">Total price</h4>
                 <h5 className="col-lg-2">
                     {fullPrice} {locale ? currencyDicts[locale] : ''}
                 </h5>
