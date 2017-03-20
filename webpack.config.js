@@ -11,16 +11,16 @@ var babelLoader = {
         dir('helpers'),
         dir('server')
     ],
-    loader: 'babel',
+    loader: 'babel-loader',
     query: { 'presets': ['react', 'es2015', 'stage-0'] }
 };
 
-var jadeLoader = {
-    test: /\.jade$/,
+var pugLoader = {
+    test: /\.pug/,
     include: [
         dir('server')
     ],
-    loader: 'jade'
+    loader: 'pug-loader'
 };
 
 var cssLoader = [
@@ -30,11 +30,11 @@ var cssLoader = [
             dir('client'),
             dir('node_modules/bootstrap')
         ],
-        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
     },
     {
         test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader : 'file'
+        loader : 'file-loader'
     }
 ];
 
@@ -80,7 +80,7 @@ module.exports = [
             libraryTarget: 'commonjs'
         },
         module: {
-            loaders: [ babelLoader, jadeLoader ].concat(cssLoader)
+            loaders: [ babelLoader, pugLoader ].concat(cssLoader)
         },
         externals: [
             {

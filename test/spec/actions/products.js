@@ -65,7 +65,7 @@ describe('products actions', function() {
 
             this.apiUrl = `/api/${this.product.locale}/${this.product.lang}/products/${this.product.productNumber}`;
             this.productUrl = `http://www.ikea.com/${this.product.locale}/${this.product.lang}/catalog/products/${this.product.productNumber}/`;
-            this.fetchMock.mock(this.apiUrl, 'get', this.product);
+            this.fetchMock.mock(this.apiUrl, this.product, { method: 'GET'});
         });
 
         afterEach(function() {
