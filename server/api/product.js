@@ -1,6 +1,5 @@
 import config from '../../cfgs/config';
 import request from 'request';
-import vow from 'vow';
 import _ from 'lodash';
 import { getProductUrl } from '../../helpers/url';
 import { getFirstProperty } from '../../helpers/object';
@@ -19,7 +18,7 @@ class ProductRequest {
         var defaultError = {
             error: 'Don\'t have data of item'
         };
-        return new vow.Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request
                 .get(this.url, (error, response, body) => {
                     if (error) {
