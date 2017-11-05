@@ -7,7 +7,7 @@ import thunkMiddleware from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import persistState from 'redux-localstorage';
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 
 // Project styles
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
